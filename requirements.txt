@@ -7,3 +7,4 @@ firebase-admin
 opencv-python-headless
 numpy
 pillow
+pytz
