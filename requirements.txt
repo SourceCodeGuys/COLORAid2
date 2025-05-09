@@ -1,0 +1,9 @@
+Flask
+python-dotenv
+flask-cors
+pyrebase4
+gunicorn
+firebase-admin
+opencv-python-headless
+numpy
+pillow
