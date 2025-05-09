@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <style>
+        .table-responsive {
+            max-height: 400px; 
+            overflow-y: auto;
+            border: 1px solid #ddd; 
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .info-button {
+            border: none;
+            background: none;
+            color: #17a2b8; /* Bootstrap info color */
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="nav">
+        <div class="nav-logo">
+            <img src="static/img/Logo.png" style="height: 40px; margin-top: -13px; margin-left: 13px;">
+            <a href="{{ url_for('profile') }}" class="redirect-link">
+                <p>COLORaid</p>
+            </a>
+        </div>
+        <div class="nav-menu">
+            <ul>
+                <li><a href="{{ url_for('profile') }}" class="link">Profile</a></li>
+                <li><a href="{{ url_for('test_results') }}" class="active link">Test Results</a></li>
+                <li><a href="{{ url_for('settings') }}" class="link">Settings</a></li>
+                <li><a href="{{ url_for('logout') }}" class="link">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="wrapper">
+        <div class="container">
+            <h1 class="welcome-message">CPD Test Results</h1>
+            <br>
+            {% if results %}
+                <!-- Scrollable table container -->
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date Taken</th> 
+                                <th scope="col">
+                                    Total Error Score
+                                    <!-- Error Score Info Button -->
+                                    <button type="button" class="info-button fas fa-info-circle" data-toggle="modal" data-target="#errorScoreModal">?</button>
+                                </th>
+                                <th scope="col">
+                                    Classification
+                                    <!-- Classification Info Button -->
+                                    <button type="button" class="info-button fas fa-info-circle" data-toggle="modal" data-target="#classificationModal">?</button>
+                                </th>
+                                <th scope="col">Protan Score</th>
+                                <th scope="col">Deutan Score</th>
+                                <th scope="col">Tritan Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                                <tr>
+                                    <td>
+                                        {{ result.timestamp.split(" ")[0] }}<br> 
+                                        {{ result.timestamp.split(" ")[1] }} {{ result.timestamp.split(" ")[2] }}
+                                    </td>                                  
+                                    <td>{{ result.total_score }}</td>
+                                    <td>{{ result.classification }}</td>
+                                    <td>{{ result.classification_scores.protan }}</td>
+                                    <td>{{ result.classification_scores.deutan }}</td>
+                                    <td>{{ result.classification_scores.tritan }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <a class="btn btn-primary" style="border-radius: 20px" href="{{ url_for('result') }}">See Latest Result</a>
+            {% else %}
+                <p class="info-text">You have no test results yet. Take a test to see your results here!</p>
+                <div style="display: flex; justify-content: center;">
+                    <a class="btn btn-secondary btn-lg" href="{{ url_for('test') }}">Start Test</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Error Score Modal -->
+    <div class="modal fade" id="errorScoreModal" tabindex="-1" role="dialog" aria-labelledby="errorScoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorScoreModalLabel">Total Error Score</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <p><strong>Total Error Score </strong>is a cumulative measure of differences between expected adjacent positions in the sorting of tile sequence.</p>
+                        <p><strong>Low error scores</strong> signify a closer approximation to the correct order. </p>
+                        <p>A score of closer to zero "0" indicates <strong>normal color vision.</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classification Modal -->
+    <div class="modal fade" id="classificationModal" tabindex="-1" role="dialog" aria-labelledby="classificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="classificationModalLabel">CPD Classification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Color Perception Deficiency Classification is determined based on the highest score for each CPD type. </p>                      
+                    <p>A <strong>normal score</strong> is between 0 and 70.</p>
+                    <p>A <strong>moderate score</strong> is between 71  and 120.</p>
+                    <p>An <strong>average score</strong> is between 121 and 200.</p>
+                    <p>A <strong>severe score</strong> is greater than 200.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>

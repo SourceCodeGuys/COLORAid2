@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opticor: Farnsworth-Munsell 100 Hue Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.min.css') }}">
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important; 
+            -webkit-focus-ring-color: rgba(255, 255, 255, 0) !important; 
+            outline: none !important;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none; 
+        }
+
+        html, body {
+            padding: 10px;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            background: #000;
+            overflow-x: hidden;
+        }
+    
+        .btn-custom1 {
+            background-color: #3bb0b7;
+            color: #ffffff;
+        }
+    
+        .sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            border: none;
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            max-width: 100vw;
+            margin-bottom: 20px; 
+            overflow-x: hidden;
+        }
+    
+        .sortable li {
+            flex: 1;
+            padding: 0;
+            margin: 2px;
+            height: 50px;
+            width: 50px;
+            font-size: 0.8em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            border: none; /* Ensures there is no border */
+        }
+    
+    
+        .cheat {
+            color: transparent;
+        }
+    
+        .red {
+            color: red !important;
+        }
+    
+        .button-group {
+            display: flex;
+            justify-content: flex-start;
+            gap: 5px;
+        }
+    
+        .modal-blur {
+            filter: blur(5px);
+        }
+    
+        .portrait-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+    
+</head>
+<body>
+    <!-- Portrait mode warning -->
+    <div id="portraitWarning" class="portrait-warning">
+        Please rotate your device to landscape mode to proceed.
+    </div>
+
+    <!-- Main content to be blurred when modal is open -->
+    <div class="content-to-blur">
+        <div class="row">
+            <div class="col">
+                <h1 style="font-weight:100;font-size:2em;color:#fff">
+                    <img id="cheatBtn" src="{{ url_for('static', filename='img/colorwheel.png') }}" alt="..." class="img-thumbnail img-fluid" style="width:70px;float:left;border-radius:200px;margin-top:20px">
+                    <br/>
+                    &nbsp;&nbsp;Farnsworth-Munsell Hue Test 
+                </h1>
+                <p style="color:#fff;" class="lead">The first and last plates of each tray are fixed. Arrange the following sets of colored plates according to hue from the first up-to the last plate.</p>
+                
+                <ul id="sortable0" class="sortable"></ul>
+                <ul id="sortable1" class="sortable"></ul>
+                <ul id="sortable2" class="sortable"></ul>
+                <ul id="sortable3" class="sortable"></ul>
+                <br>
+                <div class="button-group">
+                    <button class="btn btn-success btn-lg" style="border-radius: 20px; width:120px"  id="checkMe">Check</button>
+                    <a class="btn btn-outline-danger btn-lg" style="border-radius: 20px" href="/profile">Cancel</a>
+                    <!-- Reset Button to trigger the modal -->
+                    <a class="btn btn-secondary btn-lg" style="color:white; margin-left: auto; border-radius: 20px" data-toggle="modal" data-target="#resetModal">Reset</a>
+                </div>
+                <div><p></p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure for Reset Confirmation -->
+    <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="resetModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetModalLabel">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to reset the tiles?
+                </div>
+                <div class="modal-footer">
+                    <a href="/test" style="border-radius: 20px" class="btn btn-success">Confirm</a>
+                    <button type="button" style="border-radius: 20px" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to enforce landscape mode and toggle blur class -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        function checkOrientation() {
+            if (window.innerHeight > window.innerWidth) {
+                // Show warning overlay and hide content if in portrait mode
+                document.getElementById('portraitWarning').style.display = 'flex';
+                document.querySelector('.content-to-blur').style.display = 'none';
+            } else {
+                // Hide warning overlay and show content if in landscape mode
+                document.getElementById('portraitWarning').style.display = 'none';
+                document.querySelector('.content-to-blur').style.display = 'block';
+            }
+        }
+
+        // Run the orientation check on page load and whenever the window is resized
+        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkOrientation);
+
+        $(document).ready(function() {
+            // Add blur effect when modal is shown
+            $('#resetModal').on('show.bs.modal', function () {
+                $('.content-to-blur').addClass('modal-blur');
+            });
+    
+            // Remove blur effect when modal is hidden
+            $('#resetModal').on('hidden.bs.modal', function () {
+                $('.content-to-blur').removeClass('modal-blur');
+            });
+    
+            // When the "Cancel" button is hovered over
+            $('.btn-outline-danger').hover(
+                function() {
+                    // Change "Confirm" button to outline style
+                    $('.btn-success').removeClass('btn-success').addClass('btn-outline-success');
+                },
+                function() {
+                    // Revert "Confirm" button back to original style when hover ends
+                    $('.btn-outline-success').removeClass('btn-outline-success').addClass('btn-success');
+                }
+            );
+        });
+    </script>
+
+    <!-- jQuery and Bootstrap JS dependencies -->
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+</body>
+</html>

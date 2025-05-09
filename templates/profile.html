@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="nav">
+        <div class="nav-logo">
+            <img src="static/img/Logo.png" style="height: 40px; margin-top: -13px; margin-left: 13px;">
+            <a href="{{ url_for('profile') }}" class="redirect-link">
+                <p>COLORaid</p>
+            </a>
+        </div>
+        <div class="nav-menu">
+            <ul>
+                <li><a href="{{ url_for('profile') }}" class="active link">Profile</a></li>
+                <li><a href="{{ url_for('test_results') }}" class="link">Test Results</a></li>
+                <li><a href="{{ url_for('settings') }}" class="link">Settings</a></li>
+                <li><a href="{{ url_for('logout') }}" class="link">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="wrapper">
+        <div class="container">
+            <h1 class="welcome-message">Welcome, {{ username }}!</h1>
+            <p class="info-text">This application helps you take the Farnsworth-Munsell 100 hue test to check for color vision deficiencies.</p>
+            <div style="display: flex; justify-content: center;">
+                {% if has_results %}
+                    <!-- Buttons for existing users with test results -->
+                    <a class="btn btn-secondary btn-lg" style="border-radius: 20px"  href="{{ url_for('camera') }}">Open Camera</a>
+                    <a class="btn btn-secondary btn-lg" style="border-radius: 20px; color:white" data-toggle="modal" data-target="#retakeModal">Retake the Test</a>
+                {% else %}
+                    <!-- Button for new users without test results -->
+                    <a class="btn btn-secondary btn-lg" style="border-radius: 20px" href="{{ url_for('test') }}">Start Test</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Retake Test Confirmation Modal -->
+    <div class="modal fade" id="retakeModal" tabindex="-1" role="dialog" aria-labelledby="retakeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="retakeModalLabel">Confirm Retake</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Retaking the test will overwrite your previous results. Are you sure you wish to proceed?
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ url_for('test') }}" style="border-radius: 20px" class="btn btn-success">Yes, Retake Test</a>
+                    <button type="button" class="btn btn-outline-danger" style="border-radius: 20px" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {    
+            $('.btn-outline-danger').hover(
+                function() {
+                    $('.btn-success').removeClass('btn-success').addClass('btn-outline-success');
+                },
+                function() {
+                    $('.btn-outline-success').removeClass('btn-outline-success').addClass('btn-success');
+                }
+            );
+        });
+    </script>
+    
+    <!-- jQuery and Bootstrap JS dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

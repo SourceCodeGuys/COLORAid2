@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <script></script>
+</head>
+<body>
+        <!-- header -->
+    <header>
+       <div class="logo">
+        <a href="{{ url_for('index') }}" class="redirect-link">
+            COLORaid</a>
+        </div>
+        
+        <div class="nav-button">
+            <a href="{{ url_for('index') }}">
+                <button class="btn white-btn">Home</button>
+            </a>
+            
+        </div>
+    </header>
+
+    <!-- slider -->
+
+    <div class="slider">
+        <!-- list Items -->
+        <div class="list">
+            <div class="item active">
+                <img src="{{ url_for('static', filename='img/cpd-bird/normal.png') }}">
+                <div class="content">
+                    <p>Trichromatic Vision</p>
+                    <h2>Normal</h2>
+                    <p>
+                        Normal vision or trichromatic vision is the standard human color vision.
+                        Individuals with normal vision perceive a full spectrum of colors through three types of photoreceptor cells in the retina (cones) sensitive to red, green, and blue light.
+                    </p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/protan.png') }}">
+                <div class="content">
+                    <p>Color Vision Deficiency</p>
+                    <h2>Protan</h2>
+                    <p>
+                        Protan is the second most common type of color vision deficiency, characterized by a reduced sensitivity to red light. Individuals with protanomaly have difficulty distinguishing between shades of red and green, especially in low light conditions.
+                    </p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/deutan.png') }}">
+                <div class="content">
+                    <p>Color Vision Deficiency</p>
+                    <h2>Deutan</h2>
+                    <p>
+                        Deuteranomaly is the most common type of color blindness, affecting about 6% of men. It is caused by a reduced sensitivity to green light, which makes it difficult to differentiate between shades of red and green, particularly in dim lighting.
+                    </p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/tritan.png') }}">
+                <div class="content">
+                    <p>Color Vision Deficiency</p>
+                    <h2>Tritan</h2>
+                    <p>
+                        Tritanomaly is a rare form of color blindness that affects both males and females equally. It is characterized by a reduced sensitivity to blue light, making it difficult to distinguish between shades of blue and green, as well as between yellow and red.
+                    </p>
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/mono.png') }}">
+                <div class="content">
+                    <p>Color Vision Deficiency</p>
+                    <h2>Monochromacy</h2>
+                    <p>
+                        Monochromacy or total color blindness is a rare and severe form of color vision deficiency where an individual can only see shades of gray.
+                        This occurs when a person has either no functioning cone cells or only one type of cone cell, leading to the inability to perceive any color.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+        <!-- button arrows -->
+        <div class="arrows">
+            <button id="prev"></button>
+            <button id="next"></button>
+        </div>
+        <!-- thumbnail -->
+        <div class="thumbnail">
+            <div class="item active">
+                <img src="{{ url_for('static', filename='img/cpd-bird/normal2.png') }}">
+                <div class="content">
+                    Normal Vision
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/protan2.png') }}">
+                <div class="content">
+                    Protan
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/deutan2.png') }}">
+                <div class="content">
+                    Deutan
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/tritan2.png') }}">
+                <div class="content">
+                    Tritan
+                </div>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='img/cpd-bird/mono2.png') }}">
+                <div class="content">
+                    Monochromacy
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+
+</body>
+</html>
